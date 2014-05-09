@@ -48,8 +48,9 @@ bool CSocket::createConnection(char *pHostName, int nPort)
 		int ret = connect(m_socket, (sockaddr*)&addrServ, sizeof(SOCKADDR));
 		if(ret != 0)
 		{
-			printf("connect failed!\n");
 			ret = GetLastError();
+			STMP_DBG_OUTPUT("connect failed!\nerror code: %d\n", ret);
+			printf("%d \n", ret);
 			return false;
 		}
 		m_connected = true;
@@ -57,7 +58,7 @@ bool CSocket::createConnection(char *pHostName, int nPort)
 	}
 	else
 	{
-		printf("can't retrieve IP by HostName\n");
+		STMP_DBG_OUTPUT("can't retrieve IP by HostName\n");
 		return false;
 	}
 }
