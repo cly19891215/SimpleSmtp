@@ -13,7 +13,10 @@ public:
 	{}
 	~CSocket()
 	{
-		closeSocket();
+		if(m_socket)
+		{
+			closeSocket();
+		}
 	}
 	static void initWSA();
 	static void cleanWSA();
@@ -25,7 +28,5 @@ public:
 	bool isConnected();
 
 };
-
-
 
 #endif

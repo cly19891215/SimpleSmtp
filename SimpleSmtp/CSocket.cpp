@@ -53,6 +53,7 @@ bool CSocket::createConnection(char *pHostName, int nPort)
 			printf("%d \n", ret);
 			return false;
 		}
+		STMP_DBG_OUTPUT("open socket connect\n");
 		m_connected = true;
 		return true;
 	}
@@ -65,7 +66,8 @@ bool CSocket::createConnection(char *pHostName, int nPort)
 void CSocket::closeSocket()
 {
 	closesocket(m_socket);
-	m_socket = NULL;
+	m_socket = NULL; 
+	STMP_DBG_OUTPUT("close socket connect\n");
 	//WSACleanup();
 }
 bool CSocket::isConnected()

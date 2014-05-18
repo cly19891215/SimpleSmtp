@@ -4,7 +4,7 @@
 
 #define MAX_SMTP_RESPONSE_LEN			1024
 #define MAX_SMTP_SEND_LEN				1024
-#define MAX_SMTP_CMD_LEN				20
+#define MAX_SMTP_CMD_LEN				30
 #define MAX_SMTP_CMD_RESPCODE_LEN		4
 #define MAX_SMTP_CMD_NUM				10
 
@@ -24,17 +24,21 @@ typedef enum
 	SMTP_USERPASSW,
 	SMTP_MAIL_FROM,
 	SMTP_RCPT_TO,
-	SMTP_DATA
+	SMTP_DATA_REQ,
+	SMTP_DATA_CONTENT,
+	SMTP_QUIT
 }en_smtp_cmd;
 const static smtp_command_respons SMTP_COMMAND[MAX_SMTP_CMD_NUM] = {
 								{"CONNECT SERVER", "220"},
-								{"HELO", "250"},
-								{"AUTH LOGIN", "334"},
-								{"USERADDR", "334"},
-								{"USERPASSW", "235"},
-								{"MAIL FROM:", "250"},
-								{"RCPT TO:", "250"},
-								{"DATA", "354"}
+								{"HELO %s\r\n", "250"},
+								{"AUTH LOGIN\r\n", "334"},
+								{"%s\r\n", "334"},
+								{"%s\r\n", "235"},
+								{"MAIL FROM: <%s>\r\n", "250"},
+								{"RCPT TO: <%s>\r\n", "250"},
+								{"DATA\r\n", "354"},
+								{"%s\r\n", "250"},
+								{"QUIT\r\n", "221"}
 								};
 
 
@@ -65,6 +69,8 @@ public:
 	void checkAuthLogin();
 	//get m_strAddr
 	std::string getAddr();
+	void sendEMail(CSmtpRole &rcpt, std::string &strSubject, std::string &strBody);
+	void sendEMailEx(CSmtpRole &rcpt, std::string &strSubject, std::string &strBody, std::string &strFilePath);
 private:
 	bool connectServer(CSocket &s);
 	bool sendHelo(CSocket &s);
@@ -72,8 +78,10 @@ private:
 	bool sendUserAddr(CSocket &s);
 	bool sendUserPassw(CSocket &s);
 	bool sendMailFrom(CSocket &s);
-	bool sendRcptTo(CSocket &s);
-	bool sendData(CSocket &s);
+	bool sendRcptTo(CSocket &s, std::string &strRcpt);
+	bool sendDataReq(CSocket &s);
+	bool sendDataContent(CSocket &s, std::string &strContent);
+	bool sendQuit(CSocket &s);
 };
 
 class CSmtpManage
